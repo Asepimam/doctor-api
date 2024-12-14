@@ -1,0 +1,45 @@
+Table users {
+  id int [pk, increment]
+  username varchar(120)
+  password varchar(8)
+  email varchar
+  role varchar
+}
+
+Table doctor {
+  id int [pk, increment]
+  name varchar
+  email varchar
+  phone varchar
+  address varchar
+  speciality varchar
+  experience varchar
+  qualification varchar
+  user_id int [ref: > users.id]
+}
+
+Table patient {
+  id int [pk, increment]
+  name varchar
+  email varchar
+  phone varchar
+  address varchar
+  user_id int [ref: > users.id]
+}
+
+Table appointment {
+  id int [pk, increment]
+  date date
+  time time
+  doctor_id int [ref: > doctor.id]
+  patient_id int [ref: > patient.id]
+}
+
+Table prescription {
+  id int [pk, increment]
+  date date
+  time time
+  doctor_id int [ref: > doctor.id]
+  patient_id int [ref: > patient.id]
+  prescription varchar
+}
