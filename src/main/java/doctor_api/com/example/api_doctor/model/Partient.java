@@ -1,5 +1,6 @@
 package doctor_api.com.example.api_doctor.model;
 
+import doctor_api.com.example.api_doctor.exception.constraints.ValidPhoneNumber;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -7,35 +8,33 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "doctor")
+@Table(name = "partient")
 @Data
-@NoArgsConstructor
+@NoArgsConstructor 
 @AllArgsConstructor
-public class Doctor {
+public class Partient {
     @Id
-    @GeneratedValue(strategy =  GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotEmpty(message = "name is required")
+    @NotEmpty(message = "Name is required")
     private String name;
 
     @NotEmpty(message = "email is required")
-    @Email(message = "email is invalid")
     private String email;
 
+    @NotEmpty(message = "phone is required")
+    @ValidPhoneNumber(message = "Invalid phone number")
+    private String phone;
 
-    private Long phone;
-
-    @NotEmpty(message = "speciality is required")
-    private String speciality;
-
+    @NotEmpty(message = "address is required")
+    private String address;
 
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
