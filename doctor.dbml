@@ -43,3 +43,21 @@ Table prescription {
   patient_id int [ref: > patient.id]
   prescription varchar
 }
+
+Table call_rooms {
+  id int [pk, increment]
+  channel_id varchar(100)
+  doctor_id int [ref: > doctor.id]
+  patient_id int [ref: > patient.id]
+}
+
+Table call_logs {
+  id int [pk, increment]
+  date date
+  time time
+  doctor_id int [ref: > doctor.id]
+  patient_id int [ref: > patient.id]
+  call_duration time
+  joined_at time
+  left_at time
+}
