@@ -5,7 +5,8 @@ public class ApiResponse<T> {
     private int status;
     private String message;
     private T data;
-
+    private String token;
+    
     // Constructor untuk respons sukses
     public ApiResponse(int status, String message, T data) {
         this.status = status;
@@ -18,6 +19,13 @@ public class ApiResponse<T> {
         this.status = status;
         this.message = message;
         this.data = null;
+    }
+
+    public ApiResponse(int status, String message, T data, String token) {
+        this.status = status;
+        this.message = message;
+        this.data = data;
+        this.token = token;
     }
 
     // Getter & Setter
@@ -43,5 +51,13 @@ public class ApiResponse<T> {
 
     public void setData(T data) {
         this.data = data;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }
