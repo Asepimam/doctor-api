@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import doctor_api.com.example.api_doctor.helper.ApiResponse;
+import doctor_api.com.example.api_doctor.helper.utils.JWT.JwtUtil;
 import doctor_api.com.example.api_doctor.model.User;
 import doctor_api.com.example.api_doctor.repository.UserRepository;
 
@@ -24,6 +25,9 @@ public class UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtUtil jwtTokenUtil;
 
     public ResponseEntity<ApiResponse<List<User>>> fetchAllUsers() {
         try {
@@ -91,9 +95,14 @@ public class UserService {
                         .body(new ApiResponse<>(HttpStatus.UNAUTHORIZED.value(), "Invalid credentials", null));
             }
 
+            // Generate JWT token
+            String token = jwtTokenUtil.genereteToken(existingUser.getEmail());
+
             logger.info("User authenticated: {}", existingUser);
-            return ResponseEntity
-                    .ok(new ApiResponse<>(HttpStatus.OK.value(), "User authenticated", existingUser));
+            
+            // Return token along with user data
+            return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), "User authenticated", existingUser, token));
+
         } catch (Exception e) {
             logger.error("Error authenticating user: {}", e.getMessage());
             return ResponseEntity
