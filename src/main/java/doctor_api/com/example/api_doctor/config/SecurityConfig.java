@@ -21,7 +21,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable()) 
         .authorizeHttpRequests(requests -> requests
-                .requestMatchers("/api/auth/login").permitAll() // Login tanpa autentikasi
+                .requestMatchers("auth/login").permitAll() // Login tanpa autentikasi
                 .anyRequest().authenticated() // Semua endpoint lain harus diautentikasi
         )
         .sessionManagement(session -> session
