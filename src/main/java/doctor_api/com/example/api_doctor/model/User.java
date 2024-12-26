@@ -1,5 +1,7 @@
 package doctor_api.com.example.api_doctor.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -36,6 +38,7 @@ public class User {
 
     @NotEmpty(message = "password is required")
     @Size(min = 4 ,max = 80, message = "Name must be between 4 and 50 characters")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @NotEmpty(message = "role is required")
