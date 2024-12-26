@@ -19,3 +19,8 @@ spring.jpa.show-sql=true
 # secret key for jwt
 jwt.secret= <secret_key>
 jwt.issuer= <issuer>
+
+#Payment Gateway
+Midtrans.serverKey = <YOUR_SERVER_KEY>
+Midtrans.clientKey = <Cliet_KEY>
+Midtrans.isProduction = <trueOrfalse>
