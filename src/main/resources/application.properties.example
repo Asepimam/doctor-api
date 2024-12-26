@@ -1,0 +1,21 @@
+spring.application.name=api-doctor
+# base 
+# api.base.path=api/v1
+#  data source configuration for mysql
+
+spring.datasource.url=<url>
+spring.datasource.username=<username>
+spring.datasource.password=<password>
+
+
+# # hibernate ddl auto (create, create-drop, validate, update)
+spring.jpa.hibernate.ddl-auto=update
+
+# # show sql queries in the console
+spring.jpa.show-sql=true
+
+# spring.profiles.active=dev
+
+# secret key for jwt
+jwt.secret= <secret_key>
+jwt.issuer= <issuer>
