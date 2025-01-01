@@ -32,6 +32,7 @@ dependencies {
 	implementation 'com.midtrans:java-library:3.2.1'
 	implementation 'com.auth0:java-jwt:4.4.0'
 	implementation 'org.postgresql:postgresql'
+	implementation fileTree(dir: 'libs', include: ['*.jar'])
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.projectlombok:lombok'
