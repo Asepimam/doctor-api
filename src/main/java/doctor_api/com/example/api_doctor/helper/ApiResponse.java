@@ -1,6 +1,8 @@
 package doctor_api.com.example.api_doctor.helper;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiResponse<T> {
     private int status;
     private String message;
@@ -18,7 +20,6 @@ public class ApiResponse<T> {
     public ApiResponse(int status, String message) {
         this.status = status;
         this.message = message;
-        this.data = null;
     }
 
     public ApiResponse(int status, String message, T data, String token) {

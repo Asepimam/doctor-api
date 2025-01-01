@@ -1,7 +1,12 @@
 package doctor_api.com.example.api_doctor.model;
 
+import java.time.LocalDateTime;
+
+import org.checkerframework.common.aliasing.qual.Unique;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import doctor_api.com.example.api_doctor.exception.constraints.ValidRole;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,7 +22,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "dt_user")
+@Table(name = "users")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -28,28 +33,25 @@ public class User {
 
     @NotEmpty(message = "Username is required")
     @Size(min = 4 ,max = 50, message = "Name must be between 4 and 50 characters")
+    // username must be unique
+    @Unique()
     private String username;
 
 
     @NotEmpty(message = "email is required")
-    @Size(min = 4 ,max = 50, message = "Name must be between 4 and 50 characters")
     @Email(message = "Email is invalid")
     private String email;
 
     @NotEmpty(message = "password is required")
-    @Size(min = 4 ,max = 80, message = "Name must be between 4 and 50 characters")
+    @Size(min = 8 ,max = 13, message = "password must be between 8 and 13 characters")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @NotEmpty(message = "role is required")
-    @Size(min = 4 ,max = 50, message = "Name must be between 4 and 50 characters")
+    @ValidRole(message = "Invalid role. Allowed roles are: patient, doctor")
     private String role;
-
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Doctor doctor;
-
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Partient partient;
     
+    private LocalDateTime create_at = LocalDateTime.now();
+    private LocalDateTime update_at = LocalDateTime.now();
     
 }

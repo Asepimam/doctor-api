@@ -36,7 +36,7 @@ public class CallLog {
 
     @ManyToOne()
     @JoinColumn(name = "patient_id")
-    private Partient patient;
+    private Patient patient;
 
 
     @Column(name = "call_duration",nullable = false)

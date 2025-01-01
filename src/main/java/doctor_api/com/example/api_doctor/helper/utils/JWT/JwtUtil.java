@@ -3,6 +3,7 @@ package doctor_api.com.example.api_doctor.helper.utils.JWT;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import com.auth0.jwt.JWT;
@@ -38,4 +39,18 @@ public class JwtUtil {
             throw new RuntimeException("Invalid token");
         }
     }
+    public boolean isTokenValid(String token, UserDetails userDetails) {
+        final String username = validateToken(token);
+        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    }
+
+    private boolean isTokenExpired(String token) {
+        try {
+            DecodedJWT decodedJWT = JWT.decode(token);
+            return decodedJWT.getExpiresAt().before(new Date());
+        } catch (Exception e) {
+            return true;
+        }
+    }
+
 }

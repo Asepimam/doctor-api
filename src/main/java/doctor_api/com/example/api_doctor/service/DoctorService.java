@@ -15,7 +15,7 @@ public class DoctorService {
 
     public ResponseEntity<ApiResponse<Doctor>> createDoctor(Doctor doctor) {
         try {
-            if (doctorRepository.findByEmail(doctor.getEmail()) != null) {
+            if (doctorRepository.findByEmail(doctor.getUser().getEmail()) != null) {
                 return ResponseEntity
                         .status(409)
                         .body(new ApiResponse<>(409, "Email already exists", null));
@@ -56,7 +56,7 @@ public class DoctorService {
     // update doctor
     public ResponseEntity<ApiResponse<Doctor>> updateDoctor(Doctor doctor) {
         try {
-            Doctor existingDoctor = doctorRepository.findByEmail(doctor.getEmail());
+            Doctor existingDoctor = doctorRepository.findByEmail(doctor.getUser().getEmail());
 
             if (existingDoctor == null) {
                 return ResponseEntity

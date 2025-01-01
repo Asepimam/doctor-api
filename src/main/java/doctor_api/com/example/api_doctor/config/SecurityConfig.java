@@ -19,18 +19,16 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable()) 
-        .authorizeHttpRequests(requests -> requests
-                .requestMatchers("auth/login").permitAll() // Login tanpa autentikasi
-                .anyRequest().authenticated() // Semua endpoint lain harus diautentikasi
-        )
-        .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Stateless untuk JWT
-        )
-        .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class); // Tambahkan filter JWT
+        http.csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/v1/users/login").permitAll()
+                        .requestMatchers("/api/v1/users/create").permitAll()
+                        .requestMatchers("/api/v1/payments/create-snap-transaction").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
-
     }
 
     @Bean
