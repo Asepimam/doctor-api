@@ -1,63 +1,133 @@
-Table users {
-  id int [pk, increment]
-  username varchar(120)
-  password varchar(8)
-  email varchar
-  role varchar
-}
+-- Table: Users
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(120) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL, -- Simpan hash password
+    email VARCHAR(255) UNIQUE NOT NULL,
+    role VARCHAR(50) NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
 
-Table doctor {
-  id int [pk, increment]
-  name varchar
-  email varchar
-  phone varchar
-  address varchar
-  speciality varchar
-  experience varchar
-  qualification varchar
-  user_id int [ref: > users.id]
-}
+-- Table: Doctor
+CREATE TABLE doctor (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    phone VARCHAR(20),
+    address VARCHAR(255),
+    speciality VARCHAR(100),
+    experience INT, -- Jumlah tahun pengalaman
+    qualification VARCHAR(255),
+    user_id INT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_doctor_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+);
 
-Table patient {
-  id int [pk, increment]
-  name varchar
-  email varchar
-  phone varchar
-  address varchar
-  user_id int [ref: > users.id]
-}
+-- Table: Patient
+CREATE TABLE patient (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    phone VARCHAR(20),
+    address VARCHAR(255),
+    user_id INT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_patient_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+);
 
-Table appointment {
-  id int [pk, increment]
-  date date
-  time time
-  doctor_id int [ref: > doctor.id]
-  patient_id int [ref: > patient.id]
-}
+-- Table: Appointment
+CREATE TABLE appointment (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    date DATE NOT NULL,
+    time TIME NOT NULL,
+    doctor_id INT NOT NULL,
+    patient_id INT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_appointment_doctor FOREIGN KEY (doctor_id) REFERENCES doctor (id) ON DELETE CASCADE,
+    CONSTRAINT fk_appointment_patient FOREIGN KEY (patient_id) REFERENCES patient (id) ON DELETE CASCADE
+);
 
-Table prescription {
-  id int [pk, increment]
-  date date
-  time time
-  doctor_id int [ref: > doctor.id]
-  patient_id int [ref: > patient.id]
-  prescription varchar
-}
+-- Table: Prescription
+CREATE TABLE prescription (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    date DATE NOT NULL,
+    time TIME NOT NULL,
+    doctor_id INT NOT NULL,
+    patient_id INT NOT NULL,
+    prescription TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_prescription_doctor FOREIGN KEY (doctor_id) REFERENCES doctor (id) ON DELETE CASCADE,
+    CONSTRAINT fk_prescription_patient FOREIGN KEY (patient_id) REFERENCES patient (id) ON DELETE CASCADE
+);
 
-Table call_rooms {
-  id int [pk, increment]
-  channel_id varchar(100)
-  doctor_id int [ref: > doctor.id]
-  patient_id int [ref: > patient.id]
-}
+-- Table: Call Rooms
+CREATE TABLE call_rooms (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    channel_id VARCHAR(100) NOT NULL,
+    doctor_id INT NOT NULL,
+    patient_id INT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_call_room_doctor FOREIGN KEY (doctor_id) REFERENCES doctor (id) ON DELETE CASCADE,
+    CONSTRAINT fk_call_room_patient FOREIGN KEY (patient_id) REFERENCES patient (id) ON DELETE CASCADE
+);
 
-Table call_logs {
-  id int [pk, increment]
-  date date
-  time time
-  doctor_id int [ref: > doctor.id]
-  patient_id int [ref: > patient.id]
-  call_duration time
-  joined_at time
-  left_at time
-}
+-- Table: Call Logs
+CREATE TABLE call_logs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    date DATE NOT NULL,
+    time TIME NOT NULL,
+    doctor_id INT NOT NULL,
+    patient_id INT NOT NULL,
+    call_duration TIME,
+    joined_at TIME,
+    left_at TIME,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_call_log_doctor FOREIGN KEY (doctor_id) REFERENCES doctor (id) ON DELETE CASCADE,
+    CONSTRAINT fk_call_log_patient FOREIGN KEY (patient_id) REFERENCES patient (id) ON DELETE CASCADE
+);
+
+-- Table: Payment
+CREATE TABLE payment (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id VARCHAR(100) UNIQUE NOT NULL,
+    appointment_id INT NOT NULL,
+    patient_id INT NOT NULL,
+    gross_amount DECIMAL(12, 2) NOT NULL,
+    payment_status VARCHAR(50) NOT NULL, -- e.g., 'pending', 'success', 'failed'
+    payment_type VARCHAR(50), -- e.g., 'credit_card', 'bank_transfer'
+    transaction_time DATETIME NOT NULL,
+    midtrans_response TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_payment_appointment FOREIGN KEY (appointment_id) REFERENCES appointment (id) ON DELETE CASCADE,
+    CONSTRAINT fk_payment_patient FOREIGN KEY (patient_id) REFERENCES patient (id) ON DELETE CASCADE,
+    INDEX idx_patient (patient_id)
+);
+
+-- Table: Refund
+CREATE TABLE refund (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    payment_id INT NOT NULL,
+    refund_amount DECIMAL(12, 2) NOT NULL,
+    refund_status VARCHAR(50) NOT NULL, -- e.g., 'pending', 'processed', 'failed'
+    refund_reason VARCHAR(255),
+    midtrans_refund_response TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_refund_payment FOREIGN KEY (payment_id) REFERENCES payment (id) ON DELETE CASCADE
+);
+
+-- Table: Transaction Logs
+CREATE TABLE transaction_logs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    payment_id INT NOT NULL,
+    status VARCHAR(50) NOT NULL, -- e.g., 'pending', 'success', 'failed', 'refund'
+    changed_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    description TEXT,
+    CONSTRAINT fk_transaction_logs_payment FOREIGN KEY (payment_id) REFERENCES payment (id) ON DELETE CASCADE
+);
