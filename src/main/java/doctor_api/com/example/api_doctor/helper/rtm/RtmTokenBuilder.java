@@ -1,6 +1,6 @@
-package io.agora.rtm;
+package doctor_api.com.example.api_doctor.helper.rtm;
 
-import io.agora.media.AccessToken;
+import doctor_api.com.example.api_doctor.helper.media.AccessToken;;
 
 public class RtmTokenBuilder {
     public enum Role {

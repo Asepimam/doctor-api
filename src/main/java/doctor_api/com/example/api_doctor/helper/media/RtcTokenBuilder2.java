@@ -1,4 +1,4 @@
-package io.agora.media;
+package doctor_api.com.example.api_doctor.helper.media;
 
 public class RtcTokenBuilder2 {
     public enum Role {

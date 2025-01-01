@@ -1,10 +1,10 @@
-package io.agora.media;
+package doctor_api.com.example.api_doctor.helper.media;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.TreeMap;
 
-import static io.agora.media.Utils.crc32;
+import static doctor_api.com.example.api_doctor.helper.media.Utils.crc32;
 
 public class AccessToken {
     public enum Privileges {
